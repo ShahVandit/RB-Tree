@@ -537,55 +537,73 @@ void rbTransplant(BookNode* u, BookNode* v){
 
 int main(){
     Library lib;
-    lib.insertBook(101, "Introduction to Algorithms", "Thomas H. Cormen","Yes");
-    lib.insertBook(48, "Data Structures and Algorithms", "Sartaj Sahni","Yes");
-	lib.printBook(48);
-    lib.insertBook(132, "Operating System Concepts", "Abraham Silberschatz","Yes");
-    lib.insertBook(25, "Computer Networks", "Andrew S. Tanenbaum", "Yes");
-	lib.borrowBook(120, 48, 2);
-	lib.borrowBook(132, 101, 1);
-    lib.insertBook(73, "Introduction to the Theory of Computation", "Michael Sipser","Yes");
-    lib.insertBook(12, "Artificial Intelligence: A Modern Approach", "Stuart Russell","Yes");
-    lib.insertBook(6, "Database Management Systems", "Raghu Ramakrishnan","Yes");
-	lib.borrowBook(144,48,3);
-	lib.borrowBook(140,48,3);
-	lib.borrowBook(142,48,2);
-	lib.borrowBook(138,12,4);
-	lib.borrowBook(150,12,3);
-	lib.borrowBook(162,12,1);
-	lib.returnBook(120, 48);
-	lib.closestBook(9);
+	Library lib;
+	std::ifstream file("input.txt");
+    std::string line;
+
+    if (file.is_open()) {
+        while (getline(file, line)) {
+			if(line=="Quit()"){
+			std::cout<<"Program Terminated!!"<<std::endl;
+			return 0;
+			}
+			while(line.back()!=')') line.pop_back();
+			// std::cout<<line<<std::endl;
+            executeCommand(line, lib);
+        }
+        file.close();
+    } else {
+        std::cerr << "Unable to open file";
+    }
+    // lib.insertBook(101, "Introduction to Algorithms", "Thomas H. Cormen","Yes");
+    // lib.insertBook(48, "Data Structures and Algorithms", "Sartaj Sahni","Yes");
+	// lib.printBook(48);
+    // lib.insertBook(132, "Operating System Concepts", "Abraham Silberschatz","Yes");
+    // lib.insertBook(25, "Computer Networks", "Andrew S. Tanenbaum", "Yes");
+	// lib.borrowBook(120, 48, 2);
+	// lib.borrowBook(132, 101, 1);
+    // lib.insertBook(73, "Introduction to the Theory of Computation", "Michael Sipser","Yes");
+    // lib.insertBook(12, "Artificial Intelligence: A Modern Approach", "Stuart Russell","Yes");
+    // lib.insertBook(6, "Database Management Systems", "Raghu Ramakrishnan","Yes");
+	// lib.borrowBook(144,48,3);
+	// lib.borrowBook(140,48,3);
+	// lib.borrowBook(142,48,2);
+	// lib.borrowBook(138,12,4);
+	// lib.borrowBook(150,12,3);
+	// lib.borrowBook(162,12,1);
+	// lib.returnBook(120, 48);
+	// lib.closestBook(9);
 	// lib.deleteBook(12);
-	lib.get_color_flips();
-    lib.insertBook(125, "Computer Organization and Design", "David A. Patterson","Yes");
-    lib.insertBook(180, "Introduction to Software Engineering", "Ian Sommerville","Yes");
-	lib.borrowBook(111, 73, 3);
-	lib.borrowBook(52, 73, 1);
-    lib.insertBook(115, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-	lib.borrowBook(153, 25, 2);
-	lib.printBooks(10, 150);
-	lib.insertBook(210, "Machine Learning: A Probabilistic Perspective","Kevin P. Murphy", "Yes");
-	lib.borrowBook(171, 25, 3);
-	lib.borrowBook(2, 132, 2);
-	lib.closestBook(50);
-	lib.borrowBook(18, 101, 2);
-	lib.insertBook(80, "Software Engineering: A Practitioner's Approach","Roger S. Pressman", "Yes");
-	lib.borrowBook(210, 210, 1);
-	lib.borrowBook(43, 73, 1);
-	lib.insertBook(60, "Introduction to Computer Graphics", "David F. Rogers","Yes");
-	lib.printBook(210);
-	lib.insertBook(4,"Design Patterns: Elements of Reusable Object-Oriented Software", "Erich Gamma", "Yes");
-	lib.insertBook(2, "Introduction to the Theory of Computation", "Michael Sipser", "Yes");
-	lib.borrowBook(34, 210, 2);
-	lib.insertBook(65,"Computer Networks: Principles, Protocols, and Practice", "Olivier Bonaventure", "Yes");
-	lib.get_color_flips();
-	lib.deleteBook(125);
-	lib.deleteBook(115);
-	lib.deleteBook(210);
-	lib.get_color_flips();
-	lib.deleteBook(25);
-	lib.deleteBook(80);
-	lib.get_color_flips();
+	// lib.get_color_flips();
+    // lib.insertBook(125, "Computer Organization and Design", "David A. Patterson","Yes");
+    // lib.insertBook(180, "Introduction to Software Engineering", "Ian Sommerville","Yes");
+	// lib.borrowBook(111, 73, 3);
+	// lib.borrowBook(52, 73, 1);
+    // lib.insertBook(115, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
+	// lib.borrowBook(153, 25, 2);
+	// lib.printBooks(10, 150);
+	// lib.insertBook(210, "Machine Learning: A Probabilistic Perspective","Kevin P. Murphy", "Yes");
+	// lib.borrowBook(171, 25, 3);
+	// lib.borrowBook(2, 132, 2);
+	// lib.closestBook(50);
+	// lib.borrowBook(18, 101, 2);
+	// lib.insertBook(80, "Software Engineering: A Practitioner's Approach","Roger S. Pressman", "Yes");
+	// lib.borrowBook(210, 210, 1);
+	// lib.borrowBook(43, 73, 1);
+	// lib.insertBook(60, "Introduction to Computer Graphics", "David F. Rogers","Yes");
+	// lib.printBook(210);
+	// lib.insertBook(4,"Design Patterns: Elements of Reusable Object-Oriented Software", "Erich Gamma", "Yes");
+	// lib.insertBook(2, "Introduction to the Theory of Computation", "Michael Sipser", "Yes");
+	// lib.borrowBook(34, 210, 2);
+	// lib.insertBook(65,"Computer Networks: Principles, Protocols, and Practice", "Olivier Bonaventure", "Yes");
+	// lib.get_color_flips();
+	// lib.deleteBook(125);
+	// lib.deleteBook(115);
+	// lib.deleteBook(210);
+	// lib.get_color_flips();
+	// lib.deleteBook(25);
+	// lib.deleteBook(80);
+	// lib.get_color_flips();
 
     return 0;
 }

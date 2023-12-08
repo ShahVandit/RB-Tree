@@ -166,7 +166,7 @@ public:
         }
     }
     if (z == EXTNODE) {
-        std::cout << "Couldn't find book in the tree" << std::endl;
+        std::cout << "Book " <<bookID<<" is no longer available "<< std::endl;
         return;
     }
     y = z;
@@ -239,8 +239,14 @@ void rbTransplant(BookNode* u, BookNode* v){
 		}
 		return node;
 	}
+	void insertBook(int id, std::string name, std::string author, std::string available){
+		BookNode* book= new BookNode(id, name, author, available);
+		insert(book);
+		// insert()
+	}
     void insert(BookNode* book) {
 		// Ordinary Binary Search Insertion
+		// BookNode* book= new BookNode(bookID, name,author,availablity);
 		book->left = EXTNODE; 
 		book->parent = nullptr;
 		book->right = EXTNODE;
@@ -408,11 +414,15 @@ void rbTransplant(BookNode* u, BookNode* v){
 			book->availabilityStatus=1;
 			return;
 		}
+		int c = book->rhp.reservations[0].patronID;
 		book->borrowedBy=book->rhp.reservations[0].patronID;
 		book->rhp.reservations[0] = book->rhp.reservations.back();
+		// ReservationNode c=book->rhp.reservations[0];
         book->rhp.reservations.pop_back();
         book->rhp.heapifyDown(0);
 		std::cout<<"Book "<<bookID<<" returned by "<<patronID<<std::endl;
+		std::cout<<"Book "<<bookID<<" alloted to "<<c<<std::endl;
+	
     }
 	BookNode* searchBook(int bookID){
 		return searchTreeHelper(this->root, bookID);
@@ -436,30 +446,27 @@ void rbTransplant(BookNode* u, BookNode* v){
 		temp.pop_back();
 		temp+="]";
 		std::cout<<"Reservations"<<" = "<<temp<<std::endl;
+		} else{
+		std::cout<<"Reservations"<<" = []"<<std::endl;
 		}
+		} else{
+			std::cout<<"Book "<<bookID<<" not found in the library"<<std::endl;
 		}
+		std::cout<<"\n";
 	}
 	void printBooks(int bookID1, int bookID2) {
-		BookNode* book1= searchTreeHelper(this->root, bookID1);
-		if(book1->bookId!=-1){
-		std::cout<<"BookID"<<" = "<< book1->bookId<<std::endl;
-		std::cout<<"Title"<<" = "<< book1->bookName<<std::endl;
-		std::cout<<"Author"<<" = "<< book1->authorName<<std::endl;
-		std::cout<<"Availability"<<" = "<< book1->availabilityStatus<<std::endl;
-		if(book1->borrowedBy!=-1) std::cout<<"BorrowedBy"<<" = "<< book1->borrowedBy<<std::endl;
+		printRangeHelper(this->root, bookID1, bookID2);
+		}
 
-		std::cout << std::endl;
+	void printRangeHelper(BookNode* book, int bookID1, int bookID2){
+		if (book == EXTNODE) {
+			return;
 		}
-		BookNode* book2= searchTreeHelper(this->root, bookID2);
-		if(book2->bookId!=-1){
-		std::cout<<"Here";
-		std::cout<<"BookID"<<" = "<< book2->bookId<<std::endl;
-		std::cout<<"Title"<<" = "<< book2->bookName<<std::endl;
-		std::cout<<"Author"<<" = "<< book2->authorName<<std::endl;
-		std::cout<<"Availability"<<" = "<< book2->availabilityStatus<<std::endl;
-		if(book2->borrowedBy!=-1) std::cout<<"BorrowedBy"<<" = "<< book2->borrowedBy<<std::endl;
-		std::cout << std::endl;
-		}
+
+		printRangeHelper(book->left, bookID1, bookID2);
+		if(book->bookId>bookID1 && book->bookId<bookID2) printBook(book->bookId);
+		printRangeHelper(book->right, bookID1, bookID2);
+
 	}
     BookNode* searchTreeHelper(BookNode* book, int bookID) {
 		if (book == EXTNODE || bookID == book->bookId) {
@@ -471,7 +478,7 @@ void rbTransplant(BookNode* u, BookNode* v){
 		}
 		return searchTreeHelper(book->right, bookID);
 	}
-	std::vector<int> closestBook(int n){
+	void closestBook(int n){
 	int diff = 0;
     std::vector<int> result;
     while (result.empty()) {
@@ -502,74 +509,152 @@ void rbTransplant(BookNode* u, BookNode* v){
 	void get_color_flips(){
 		std::cout<<"Color flips "<<color_flip<<std::endl;
 	}
+	void prettyPrint() {
+	    if (root) {
+    		printHelper(this->root, "", true);
+	    }
+	}
+	void printHelper(BookNode* root, std::string indent, bool last) {
+		// print the tree structure on the screen
+	   	if (root != EXTNODE) {
+		   std::cout<<indent;
+		   if (last) {
+		      std::cout<<"R----";
+		      indent += "     ";
+		   } else {
+		      std::cout<<"L----";
+		      indent += "|    ";
+		   }
+            
+           Color sColor = root->color;
+		   std::cout<<root->bookId<<"("<<sColor<<")"<<std::endl;
+		   printHelper(root->left, indent, false);
+		   printHelper(root->right, indent, true);
+		}
+		// cout<<root->left->data<<endl;
+	}
 };
+
+void executeCommand(const std::string& commandLine, Library& lib) {
+	std::smatch matches;
+    
+    // Regex patterns for different commands
+    std::regex insertBookRegex("InsertBook\\((\\d+),\\s*\"([^\"]+)\",\\s*\"([^\"]+)\",\\s*\"([^\"]+)\"\\)");
+    std::regex printBookRegex("PrintBook\\((\\d+)\\)");
+    std::regex printBooksRegex("PrintBooks\\((\\d+),\\s*(\\d+)\\)");
+    std::regex borrowBookRegex("BorrowBook\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)");
+    std::regex returnBookRegex("ReturnBook\\((\\d+),\\s*(\\d+)\\)");
+    std::regex findClosestBookRegex("FindClosestBook\\((\\d+)\\)");
+    std::regex deleteBookRegex("DeleteBook\\((\\d+)\\)");
+    std::regex colorFlipCountRegex("ColorFlipCount\\(\\)");
+
+    if (std::regex_match(commandLine, matches, insertBookRegex)) {
+        int id = std::stoi(matches[1].str());
+        std::string title = matches[2].str();
+        std::string author = matches[3].str();
+        std::string available = matches[4].str();
+
+        lib.insertBook(id, title, author, available);
+    } else if (std::regex_match(commandLine, matches, printBookRegex)) {
+        int id = std::stoi(matches[1].str());
+        lib.printBook(id);
+    } else if (std::regex_match(commandLine, matches, printBooksRegex)) {
+        int id1 = std::stoi(matches[1].str());
+        int id2 = std::stoi(matches[2].str());
+        lib.printBooks(id1, id2);
+    } else if (std::regex_match(commandLine, matches, borrowBookRegex)) {
+        int userId = std::stoi(matches[1].str());
+        int bookId = std::stoi(matches[2].str());
+        int duration = std::stoi(matches[3].str());
+
+        lib.borrowBook(userId, bookId, duration);
+    } else if (std::regex_match(commandLine, matches, returnBookRegex)) {
+        int userId = std::stoi(matches[1].str());
+        int bookId = std::stoi(matches[2].str());
+
+        lib.returnBook(userId, bookId);
+    } else if (std::regex_match(commandLine, matches, findClosestBookRegex)) {
+        int bookId = std::stoi(matches[1].str());
+        lib.closestBook(bookId);
+    } else if (std::regex_match(commandLine, matches, deleteBookRegex)) {
+        int bookId = std::stoi(matches[1].str());
+        lib.deleteBook(bookId);
+    } else if (std::regex_match(commandLine, matches, colorFlipCountRegex)) {
+        lib.get_color_flips();
+    } 
+	// else if(commandLine=="Quit()"){
+	// }
+}
 
 int main(){
     Library lib;
-    BookNode book1(101, "Introduction to Algorithms", "Thomas H. Cormen","Yes");
-    BookNode book2(48, "Data Structures and Algorithms", "Sartaj Sahni","Yes");
-    lib.insert(&book1);
-    lib.insert(&book2);
-	lib.printBook(48);
-    BookNode book3(132, "Operating System Concepts", "Abraham Silberschatz","Yes");
-    BookNode book4(25, "Computer Networks", "Andrew S. Tanenbaum", "Yes");
-    lib.insert(&book3);
-    lib.insert(&book4);
-	lib.borrowBook(120, 48, 2);
-	lib.borrowBook(132, 101, 1);
-    BookNode book5(73, "Introduction to the Theory of Computation", "Michael Sipser","Yes");
-    lib.insert(&book5);
-    BookNode book6(12, "Artificial Intelligence: A Modern Approach", "Stuart Russell","Yes");
-    lib.insert(&book6);
-    BookNode book7(6, "Database Management Systems", "Raghu Ramakrishnan","Yes");
-    lib.insert(&book7);
-	lib.borrowBook(144,48,3);
-	lib.borrowBook(140,48,3);
-	lib.borrowBook(142,48,2);
-	lib.borrowBook(138,12,4);
-	lib.borrowBook(150,12,3);
-	lib.borrowBook(162,12,1);
-	lib.returnBook(120, 48);
-	lib.closestBook(9);
-	lib.deleteBook(12);
-	lib.get_color_flips();
-    BookNode book8(125, "Computer Organization and Design", "David A. Patterson","Yes");
-    lib.insert(&book8);
-    BookNode book9(180, "Introduction to Software Engineering", "Ian Sommerville","Yes");
-    lib.insert(&book9);
-	lib.borrowBook(111, 73, 3);
-	lib.borrowBook(52, 73, 1);
-    BookNode book10(115, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-    lib.insert(&book10);
-	lib.borrowBook(153, 25, 2);
-	lib.printBooks(10, 150);
-    BookNode book11(210, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-    BookNode book12(80, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-    BookNode book13(60, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-    BookNode book14(4, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-    BookNode book15(2, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-    BookNode book16(65, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
-	lib.insert(&book11);
-	lib.borrowBook(171, 25, 3);
-	lib.borrowBook(2, 132, 2);
-	lib.closestBook(50);
-	lib.borrowBook(18, 101, 2);
-	lib.insert(&book12);
-	lib.borrowBook(210, 210, 1);
-	lib.borrowBook(43, 73, 1);
-	lib.insert(&book13);
-	lib.printBook(210);
-	lib.insert(&book14);
-	lib.insert(&book15);
-	lib.borrowBook(34, 210, 2);
-	lib.insert(&book16);
-	lib.get_color_flips();
-	lib.deleteBook(125);
-	lib.deleteBook(115);
-	lib.deleteBook(210);
-	lib.get_color_flips();
-	lib.deleteBook(25);
-	lib.deleteBook(80);
-	lib.get_color_flips();
+	std::ifstream file("input.txt");
+    std::string line;
+
+    if (file.is_open()) {
+        while (getline(file, line)) {
+			if(line=="Quit()"){
+			std::cout<<"Program Terminated!!"<<std::endl;
+			return 0;
+			}
+			while(line.back()!=')') line.pop_back();
+			// std::cout<<line<<std::endl;
+            executeCommand(line, lib);
+        }
+        file.close();
+    } else {
+        std::cerr << "Unable to open file";
+    }
+    // lib.insertBook(101, "Introduction to Algorithms", "Thomas H. Cormen","Yes");
+    // lib.insertBook(48, "Data Structures and Algorithms", "Sartaj Sahni","Yes");
+	// // lib.prettyPrint();
+	// lib.printBook(48);
+    // lib.insertBook(132, "Operating System Concepts", "Abraham Silberschatz","Yes");
+    // lib.insertBook(25, "Computer Networks", "Andrew S. Tanenbaum", "Yes");
+	// lib.borrowBook(120, 48, 2);
+	// lib.borrowBook(132, 101, 1);
+    // lib.insertBook(73, "Introduction to the Theory of Computation", "Michael Sipser","Yes");
+    // lib.insertBook(12, "Artificial Intelligence: A Modern Approach", "Stuart Russell","Yes");
+    // lib.insertBook(6, "Database Management Systems", "Raghu Ramakrishnan","Yes");
+	// lib.borrowBook(144,48,3);
+	// lib.borrowBook(140,48,3);
+	// lib.borrowBook(142,48,2);
+	// lib.borrowBook(138,12,4);
+	// lib.borrowBook(150,12,3);
+	// lib.borrowBook(162,12,1);
+	// lib.returnBook(120, 48);
+	// lib.closestBook(9);
+	// lib.deleteBook(12);
+	// lib.get_color_flips();
+    // lib.insertBook(125, "Computer Organization and Design", "David A. Patterson","Yes");
+    // lib.insertBook(180, "Introduction to Software Engineering", "Ian Sommerville","Yes");
+	// lib.borrowBook(111, 73, 3);
+	// lib.borrowBook(52, 73, 1);
+    // lib.insertBook(115, "Operating Systems: Internals and Design Principles","William Stallings","Yes");
+	// lib.borrowBook(153, 25, 2);
+	// lib.printBooks(10, 150);
+	// lib.insertBook(210, "Machine Learning: A Probabilistic Perspective","Kevin P. Murphy", "Yes");
+	// lib.borrowBook(171, 25, 3);
+	// lib.borrowBook(2, 132, 2);
+	// lib.closestBook(50);
+	// lib.borrowBook(18, 101, 2);
+	// lib.insertBook(80, "Software Engineering: A Practitioner's Approach","Roger S. Pressman", "Yes");
+	// lib.borrowBook(210, 210, 1);
+	// lib.borrowBook(43, 73, 1);
+	// lib.insertBook(60, "Introduction to Computer Graphics", "David F. Rogers","Yes");
+	// lib.printBook(210);
+	// lib.insertBook(4,"Design Patterns: Elements of Reusable Object-Oriented Software", "Erich Gamma", "Yes");
+	// lib.insertBook(2, "Introduction to the Theory of Computation", "Michael Sipser", "Yes");
+	// lib.borrowBook(34, 210, 2);
+	// lib.insertBook(65,"Computer Networks: Principles, Protocols, and Practice", "Olivier Bonaventure", "Yes");
+	// lib.get_color_flips();
+	// lib.deleteBook(125);
+	// lib.deleteBook(115);
+	// lib.deleteBook(210);
+	// lib.get_color_flips();
+	// lib.deleteBook(25);
+	// lib.deleteBook(80);
+	// lib.get_color_flips();
+
     return 0;
 }
