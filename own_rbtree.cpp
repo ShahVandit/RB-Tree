@@ -150,6 +150,7 @@ public:
     }
 
 	void deleteBook(int bookID) {
+	std::cout<<"Here1";
     BookNode* z = EXTNODE;
     BookNode* x, *y;
     BookNode* book = this->root;
@@ -169,7 +170,6 @@ public:
         std::cout << "Couldn't find book in the tree" << std::endl;
         return;
     };
-	std::cout<<"Here1";
     y = z;
     Color y_original_color = y->color;
 	std::cout<<"Here1";
