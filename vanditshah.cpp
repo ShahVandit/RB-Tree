@@ -423,7 +423,7 @@ void rbTransplant(BookNode* u, BookNode* v){
 		if(book->rhp.reservations.empty()) book->availabilityStatus="Yes";
 		std::cout<<"Book "<<bookID<<" returned by "<<patronID<<std::endl;
 		std::cout<<"Book "<<bookID<<" alloted to "<<c<<std::endl;
-		if(book->rhp)
+		// if(book->rhp.reservations.empty())
 	
     }
 	BookNode* searchBook(int bookID){
