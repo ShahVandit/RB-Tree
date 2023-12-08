@@ -168,10 +168,11 @@ public:
     if (z == EXTNODE) {
         std::cout << "Couldn't find book in the tree" << std::endl;
         return;
-    }
+    };
 	std::cout<<"Here1";
     y = z;
     Color y_original_color = y->color;
+	std::cout<<"Here1";
     if (z->left == EXTNODE) {
         x = z->right;
         rbTransplant(z, z->right);
@@ -200,7 +201,6 @@ public:
 		fixDelete(x);
 	}	
 	std::string msg= "Book "+ std::to_string(z->bookId) +" is no longer available.";
-	std::cout<<"Here2";
 	if(!z->rhp.reservations.empty()){
 		std::string temp="Reservations made by Patrons";
 		
@@ -555,7 +555,7 @@ int main(){
 	lib.borrowBook(162,12,1);
 	lib.returnBook(120, 48);
 	lib.closestBook(9);
-	lib.deleteBook(12);
+	// lib.deleteBook(12);
 	lib.get_color_flips();
     lib.insertBook(125, "Computer Organization and Design", "David A. Patterson","Yes");
     lib.insertBook(180, "Introduction to Software Engineering", "Ian Sommerville","Yes");
