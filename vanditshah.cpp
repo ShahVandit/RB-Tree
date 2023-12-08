@@ -581,7 +581,9 @@ void executeCommand(const std::string& commandLine, Library& lib) {
         lib.deleteBook(bookId);
     } else if (std::regex_match(commandLine, matches, colorFlipCountRegex)) {
         lib.get_color_flips();
-    } 
+    } else{
+		std::cout<<"Error in command "<<commandLine<<std::endl;
+	}
 	// else if(commandLine=="Quit()"){
 	// }
 }
@@ -643,7 +645,7 @@ int main(){
 	// lib.borrowBook(43, 73, 1);
 	// lib.insertBook(60, "Introduction to Computer Graphics", "David F. Rogers","Yes");
 	// lib.printBook(210);
-	// lib.insertBook(4,"Design Patterns: Elements of Reusable Object-Oriented Software", "Erich Gamma", "Yes");
+	// lib.insertBook(4,"Design PaBook 5 borrowed by 101tterns: Elements of Reusable Object-Oriented Software", "Erich Gamma", "Yes");
 	// lib.insertBook(2, "Introduction to the Theory of Computation", "Michael Sipser", "Yes");
 	// lib.borrowBook(34, 210, 2);
 	// lib.insertBook(65,"Computer Networks: Principles, Protocols, and Practice", "Olivier Bonaventure", "Yes");
