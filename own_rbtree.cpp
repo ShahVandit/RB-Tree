@@ -435,18 +435,21 @@ void rbTransplant(BookNode* u, BookNode* v){
 			int x=book->borrowedBy;
 			if(x!=-1) std::cout<<"BorrowedBy"<<" = "<< book->borrowedBy<<std::endl;
 		} 
-			std::cout<<"Here";
 		std::string temp;
 		if(!book->rhp.reservations.empty()){
+			std::cout<<"Here1";
 			temp+="[";
 		for(auto num:book->rhp.reservations){
+			std::cout<<"Here2";
 			temp+=std::to_string(num.patronID);
 			temp+=",";
 		}
 		temp.pop_back();
 		temp+="]";
 		std::cout<<"Reservations"<<" = "<<temp<<std::endl;
+			std::cout<<"Here3";
 		}
+			std::cout<<"Here4";
 		}
 		std::cout<<"\n";
 	}
