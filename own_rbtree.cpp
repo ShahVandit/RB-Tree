@@ -435,7 +435,7 @@ void rbTransplant(BookNode* u, BookNode* v){
 			int x=book->borrowedBy;
 			if(x!=-1) std::cout<<"BorrowedBy"<<" = "<< book->borrowedBy<<std::endl;
 		} 
-			cout<<"Here";
+			std::cout<<"Here";
 		std::string temp;
 		if(!book->rhp.reservations.empty()){
 			temp+="[";
