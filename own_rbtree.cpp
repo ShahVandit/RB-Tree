@@ -195,11 +195,12 @@ public:
         y->left->parent = y;
         y->color = z->color; 
     }
-
+	std::cout<<"Here1";
     if (y_original_color == BLACK) {
 		fixDelete(x);
-	}
+	}	
 	std::string msg= "Book "+ std::to_string(z->bookId) +" is no longer available.";
+	std::cout<<"Here2";
 	if(!z->rhp.reservations.empty()){
 		std::string temp="Reservations made by Patrons";
 		
