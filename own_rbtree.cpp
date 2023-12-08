@@ -432,6 +432,7 @@ void rbTransplant(BookNode* u, BookNode* v){
 		std::cout<<"Author"<<" = "<< book->authorName<<std::endl;
 		std::cout<<"Availability"<<" = "<< book->availabilityStatus<<std::endl;
 		if(book->borrowedBy){
+			cout<<"Here";
 			int x=book->borrowedBy;
 			if(x!=-1) std::cout<<"BorrowedBy"<<" = "<< book->borrowedBy<<std::endl;
 		} 
