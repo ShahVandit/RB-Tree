@@ -478,7 +478,7 @@ void rbTransplant(BookNode* u, BookNode* v){
 		}
 		return searchTreeHelper(book->right, bookID);
 	}
-	std::vector<int> closestBook(int n){
+	void closestBook(int n){
 	int diff = 0;
     std::vector<int> result;
     while (result.empty()) {
