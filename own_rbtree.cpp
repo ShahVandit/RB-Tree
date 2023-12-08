@@ -169,6 +169,7 @@ public:
         std::cout << "Couldn't find book in the tree" << std::endl;
         return;
     }
+	std::cout<<"Here1";
     y = z;
     Color y_original_color = y->color;
     if (z->left == EXTNODE) {
@@ -195,7 +196,6 @@ public:
         y->left->parent = y;
         y->color = z->color; 
     }
-	std::cout<<"Here1";
     if (y_original_color == BLACK) {
 		fixDelete(x);
 	}	
