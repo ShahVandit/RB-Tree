@@ -106,6 +106,7 @@ public:
                     if (!w->right || w->right->color == BLACK) {
                         if (w->left)
                             w->left->color = BLACK;
+							color_flip+=1;
                         w->color = RED;
                         rightRotate(w);
                         w = x->parent->right;
@@ -114,6 +115,7 @@ public:
                     x->parent->color = BLACK;
                     if (w->right)
                         w->right->color = BLACK;
+						color_flip+=1;
                     leftRotate(x->parent);
                     x = root;
                 }
@@ -124,6 +126,7 @@ public:
                     x->parent->color = RED;
                     rightRotate(x->parent);
                     w = x->parent->left;
+					color_flip+=1;
                 }
                 if ((!w->right || w->right->color == BLACK) && (!w->left || w->left->color == BLACK)) {
                     w->color = RED;
@@ -132,6 +135,7 @@ public:
                     if (!w->left || w->left->color == BLACK) {
                         if (w->right)
                             w->right->color = BLACK;
+							color_flip+=1;
                         w->color = RED;
                         leftRotate(w);
                         w = x->parent->left;
@@ -140,6 +144,7 @@ public:
                     x->parent->color = BLACK;
                     if (w->left)
                         w->left->color = BLACK;
+						color_flip+=1;
                     rightRotate(x->parent);
                     x = root;
                 }
@@ -201,7 +206,9 @@ public:
 	}
 	std::string msg= "Book "+ std::to_string(z->bookId) +" is no longer available.";
 	if(!z->rhp.reservations.empty()){
-		std::string temp="Reservations made by Patrons";
+		std::string temp;
+		if(z->rhp.reservations.size()==1) temp="Reservations made by Patron";
+		else temp="Reservations made by Patrons";
 		
 		for(auto num:z->rhp.reservations){
 			temp+=" "+std::to_string(num.patronID)+",";
@@ -222,7 +229,7 @@ void rbTransplant(BookNode* u, BookNode* v){
         u->parent->left = v;
         if (v != EXTNODE) {
             v->color = u->color;  // Preserve the color of the replaced node
-			color_flip+=1;
+			// color_flip+=1;
         }
     } else {
         u->parent->right = v;
@@ -411,7 +418,8 @@ void rbTransplant(BookNode* u, BookNode* v){
 	void returnBook(int patronID, int bookID) {
 		BookNode* book=searchBook(bookID);
 		if(book->rhp.reservations.empty()){
-			book->availabilityStatus=1;
+			std::cout<<"Book "<<bookID<<" returned by patron "<<patronID<<std::endl;
+			book->availabilityStatus="Yes";
 			return;
 		}
 		int c = book->rhp.reservations[0].patronID;
