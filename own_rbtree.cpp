@@ -431,11 +431,11 @@ void rbTransplant(BookNode* u, BookNode* v){
 		std::cout<<"Title"<<" = "<< book->bookName<<std::endl;
 		std::cout<<"Author"<<" = "<< book->authorName<<std::endl;
 		std::cout<<"Availability"<<" = "<< book->availabilityStatus<<std::endl;
-			cout<<"Here";
 		if(book->borrowedBy){
 			int x=book->borrowedBy;
 			if(x!=-1) std::cout<<"BorrowedBy"<<" = "<< book->borrowedBy<<std::endl;
 		} 
+			cout<<"Here";
 		std::string temp;
 		if(!book->rhp.reservations.empty()){
 			temp+="[";
