@@ -420,8 +420,10 @@ void rbTransplant(BookNode* u, BookNode* v){
 		// ReservationNode c=book->rhp.reservations[0];
         book->rhp.reservations.pop_back();
         book->rhp.heapifyDown(0);
+		if(book->rhp.reservations.empty()) book->availabilityStatus="Yes";
 		std::cout<<"Book "<<bookID<<" returned by "<<patronID<<std::endl;
 		std::cout<<"Book "<<bookID<<" alloted to "<<c<<std::endl;
+		if(book->rhp)
 	
     }
 	BookNode* searchBook(int bookID){
